@@ -14,12 +14,22 @@
 Route::get('/', 'PagesController@root')->name('root');
 
 Auth::routes();
-
+Route::get('/ttest',function (){
+//    dd(Hash::make(111));
+});
 Route::group(['middleware' => 'auth'],function (){
-    Route::get('email_verify_notice','PagesController@emailVerifyNotice')->name('email_verify_notice');
+
+    Route::get('/email_verify_notice','PagesController@emailVerifyNotice')->name('email_verify_notice');
+    Route::get('/email_verification/verify', 'EmailVerificationController@verify')->name('email_verification.verify');
+    Route::get('/email_verification/send', 'EmailVerificationController@send')->name('email_verification.send');
+
     Route::group(['middleware' => 'email_verified'],function (){
         Route::get('/test',function (){
             return 'Your email is verified';
+        });
+        Route::get('/send',function(){
+            $user = \Illuminate\Support\Facades\Auth::user();
+            $user->notify(new \App\Notifications\EmailVerificationNotification());
         });
     });
 });
