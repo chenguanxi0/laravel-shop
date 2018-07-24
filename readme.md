@@ -1,1 +1,1 @@
-<p>跟我回潜江</p>
+![Image text](https://raw.githubusercontent.com/chenguanxi0/image/master/bg-21.jpg)
