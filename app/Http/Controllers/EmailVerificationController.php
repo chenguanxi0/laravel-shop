@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\InvalidRequestException;
 use App\Notifications\EmailVerificationNotification;
 use App\repositories\EmailRepository;
 use App\repositories\UserRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Mockery\Exception;
 
 
 class EmailVerificationController extends Controller
@@ -22,6 +22,7 @@ class EmailVerificationController extends Controller
     }
 
     /**
+     * @throws InvalidRequestException
      * 验证 邮箱链接
      * @param  [type]  [description]
      * @return [type]  [description]
@@ -34,16 +35,16 @@ class EmailVerificationController extends Controller
         $token = ($request->all())['amp;token'];
         //验证值是否存在
         if (!$email || !$token){
-            throw new Exception('验证链接不正确');
+            throw new InvalidRequestException('验证链接不正确');
         }
         //验证链接是否正确
         if (Cache::get('email_verify'.$email) != $token){
-            throw new Exception('验证链接不正确或已过期');
+            throw new InvalidRequestException('验证链接不正确或已过期');
         }
         //验证用户是否存在
         $user = $this->userRepository->getUser('email',$email);
         if (is_null($user)){
-            throw new Exception('用户不存在');
+            throw new InvalidRequestException('用户不存在');
         }
         //全都验证通过 清除缓存 更新email_verified字段
         Cache::forget('email_verify'.$email);
@@ -53,6 +54,7 @@ class EmailVerificationController extends Controller
     }
 
     /**
+     * @throws InvalidRequestException
      * 发送邮件
      * @param  [type]  [description]
      * @return [type]  [description]
