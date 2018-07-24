@@ -27,6 +27,7 @@ class EmailVerificationController extends Controller
      * @param  [type]  [description]
      * @return [type]  [description]
      * @date 2018/7/21
+     * @var   $xxx
      */
     public function verify(Request $request)
     {

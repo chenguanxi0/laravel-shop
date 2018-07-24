@@ -27,6 +27,6 @@ Route::group(['middleware' => 'auth'],function (){
 
     //邮箱验证通过的路由组
     Route::group(['middleware' => 'email_verified'],function (){
-
+        Route::get('user_addresses','UserAddressesController@index')->name('user_addresses.index');
     });
 });
