@@ -59,7 +59,7 @@ Vue.component('select-district',{
             this.$emit('change', [this.provinces[this.provinceId], this.cities[this.cityId], this.districts[this.districtId]]);
         }
     },
-    create(){
+    created(){
         this.setFromValue(this.initValue);
     },
     methods:{
@@ -82,7 +82,7 @@ Vue.component('select-district',{
             this.provinceId = provinceId;
 
             // 从当前城市列表中找到与数组第二个元素同名的项的索引
-            const cityId = _.findKey(this.cities,o=>o === value[1]);
+            const cityId = _.findKey(addressData[provinceId],o=>o === value[1]);
             //如果这个id不存在 清空城市列表
             if (!cityId) {
                 this.cityId = '';
@@ -92,7 +92,7 @@ Vue.component('select-district',{
             this.cityId = cityId;
 
             // 从当前市列表中找到与数组第三个元素同名的项的索引
-            const districtId = _.findKey(this.districts,o=>o === value[1]);
+            const districtId = _.findKey(addressData[cityId],o=>o === value[2]);
             //如果这个id不存在 清空市列表
             if (!districtId) {
                 this.districtId = '';

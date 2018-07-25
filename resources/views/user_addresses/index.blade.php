@@ -28,8 +28,8 @@
                                 <td>{{ $address->zip }}</td>
                                 <td>{{ $address->contact_phone }}</td>
                                 <td>
-                                    <button class="btn btn-primary">修改</button>
-                                    <button class="btn btn-danger">删除</button>
+                                    <a class="btn btn-primary" href="{{route('user_addresses.edit',['user_address'=>$address->id])}}">修改</a>
+                                    <button class="btn btn-danger btn-del-address" data-id="{{$address->id}}">删除</button>
                                 </td>
                             </tr>
                         @endforeach
@@ -39,4 +39,30 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('scriptsAfterJs')
+    <script>
+        $(document).ready(function(){
+            $(".btn-del-address").click(function () {
+                const id = $(this).data('id');
+                swal({
+                    title: "确认要删除该地址？",
+                    icon: "warning",
+                    buttons: ['取消', '确定'],
+                    dangerMode: true,
+                })
+                    .then(function (willDelete) {
+                        if (!willDelete){
+                            //如果用户点击取消 就什么都不做
+                            return;
+                        }
+                        axios.delete('/user_addresses/'+id)
+                            .then(function () {
+                                location.reload()
+                            })
+                    })
+            })
+        })
+    </script>
 @endsection
