@@ -72,18 +72,19 @@
            });
 
            $('.btn-favor').click(function () {
+               const favor_btn = $(this);
                axios.post('{{route('products.favor',['product'=>$product->id])}}')
                    .then(function (data) {
                        //0代表取消收藏成功
                        if (data.data === 0){
-                           $('.btn-favor').removeClass('btn-danger');
-                           $('.btn-favor').addClass('btn-success');
-                           $('.btn-favor').html('❤ 收藏');
+                           favor_btn.removeClass('btn-danger');
+                           favor_btn.addClass('btn-success');
+                           favor_btn.html('❤ 收藏');
                        }
                        if (data.data === 1){
-                           $('.btn-favor').removeClass('btn-success');
-                           $('.btn-favor').addClass('btn-danger');
-                           $('.btn-favor').html('取消收藏')
+                           favor_btn.removeClass('btn-success');
+                           favor_btn.addClass('btn-danger');
+                           favor_btn.html('取消收藏')
                        }
                    }).catch(function (error) {
                    if(error.response  && error.response.status === 401 )
