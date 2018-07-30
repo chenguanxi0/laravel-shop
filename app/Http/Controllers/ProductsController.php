@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\InvalidRequestException;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -36,5 +37,36 @@ class ProductsController extends Controller
         $products = $builder->paginate(16);
         $filters = array('search'=>$search,'order'=>$order);
         return view('products.index',compact('products','filters'));
+    }
+
+    /**
+     * @throws
+     * show
+     * @param  [type]  [description]
+     * @return [type]  [description]
+     * @date 2018/7/27
+     */
+    public function show(Product $product,Request $request)
+    {
+        if (!$product->on_sale){
+            throw new InvalidRequestException('商品已下架');
+        }
+        $favoriteProduct = false;
+        $user = $request->user();
+        if ($user){
+            $favoriteProduct = boolval($user->favoriteProducts->find($product));
+        }
+        return view('products.show',compact('product','favoriteProduct'));
+    }
+    public function favor(Request $request,Product $product)
+    {
+        $user = $request->user();
+        $favoriteProduct = $user->favoriteProducts->find($product);
+        if ($favoriteProduct){
+            $user->favoriteProducts()->detach($product);
+            return 0;
+        }
+        $user->favoriteProducts()->attach($product);
+        return 1;
     }
 }
