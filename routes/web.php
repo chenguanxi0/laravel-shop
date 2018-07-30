@@ -27,14 +27,18 @@ Route::group(['middleware' => 'auth'],function (){
 
     //邮箱验证通过的路由组
     Route::group(['middleware' => 'email_verified'],function (){
+        //地址相关
         Route::get('user_addresses','UserAddressesController@index')->name('user_addresses.index');
         Route::get('user_addresses/create','UserAddressesController@create')->name('user_addresses.create');
         Route::post('user_addresses','UserAddressesController@store')->name('user_addresses.store');
         Route::get('user_addresses/{user_address}','UserAddressesController@edit')->name('user_addresses.edit');
         Route::put('user_addresses/{user_address}','UserAddressesController@update')->name('user_addresses.update');
         Route::delete('user_addresses/{user_address}','UserAddressesController@destroy')->name('user_addresses.destroy');
+        //产品相关
         Route::post('products/{product}/favorite', 'ProductsController@favor')->name('products.favor');
         Route::get('products/favorites', 'ProductsController@favorites')->name('products.favorites');
+        //购物车相关
+        Route::post('cart','CartController@add')->name('cart.add');
     });
 });
 Route::redirect('/', '/products')->name('root');

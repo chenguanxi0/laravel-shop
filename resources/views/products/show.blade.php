@@ -65,12 +65,13 @@
 @section('scriptsAfterJs')
     <script>
         $(document).ready(function () {
+            //显示价格以及库存
            $('[data-toggle="tooltip"]').tooltip({trigger: 'hover'});
            $('.sku-btn').click(function () {
                $('.product-info .price span').html($(this).data('price'))
                $('.product-info .stock').html('库存'+$(this).data('stock')+'件')
            });
-
+           //收藏和取消收藏
            $('.btn-favor').click(function () {
                const favor_btn = $(this);
                axios.post('{{route('products.favor',['product'=>$product->id])}}')
@@ -98,6 +99,36 @@
                    }
                })
         });
+           //加入购物车
+            $('.btn-add-to-cart').click(function () {
+                axios.post('{{route('cart.add')}}',{
+                    'sku_id':$('label.active input[name=skus]').val(),
+                    'amount':$('.cart_amount input').val()
+                    }
+                ).then(function () {
+                    swal('添加购物车成功','','success');
+                }).catch(function (error) {
+                    if (error.response.status === 401){
+                        //401表示未登录
+                        swal('请先登录','','error');
+                    }
+                    if (error.response.status === 422){
+                        //422表示验证失败 直接打印错误
+                        // http 状态码为 422 代表用户输入校验失败
+                        var html = '<div>';
+                        _.each(error.response.data.errors, function (errors) {
+                            _.each(errors, function (error) {
+                                html += error+'<br>';
+                            })
+                        });
+                        html += '</div>';
+                        swal({content: $(html)[0], icon: 'error'})
+                    }else {
+                        swal('系统错误', '','error')
+                    }
+
+                });
+            })
 
         })
     </script>
