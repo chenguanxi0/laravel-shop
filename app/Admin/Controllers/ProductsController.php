@@ -99,7 +99,7 @@ class ProductsController extends Controller
             $form->text('title','商品名称')->rules('required');
             $form->image('image','主图')->rules('required|image');
             $form->editor('description','商品描述')->rules('required');
-            $form->radio('on_sale','上架')->options(['1'=>'是','2'=>'否'])->default('0');
+            $form->radio('on_sale','上架')->options(['1'=>'是','0'=>'否'])->default('0');
 
             //添加关联模型
             $form->hasMany('skus','SKU列表',function (Form\NestedForm $form){

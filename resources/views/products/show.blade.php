@@ -98,7 +98,7 @@
                        swal('系统错误', '', 'error');
                    }
                })
-        });
+               });
            //加入购物车
             $('.btn-add-to-cart').click(function () {
                 axios.post('{{route('cart.add')}}',{
@@ -106,7 +106,10 @@
                     'amount':$('.cart_amount input').val()
                     }
                 ).then(function () {
-                    swal('添加购物车成功','','success');
+                    swal('添加购物车成功','','success').then(function () {
+                        location.href = '{{ route('cart.index') }}';
+                    });
+
                 }).catch(function (error) {
                     if (error.response.status === 401){
                         //401表示未登录
@@ -128,7 +131,8 @@
                     }
 
                 });
-            })
+            });
+
 
         })
     </script>

@@ -39,6 +39,8 @@ Route::group(['middleware' => 'auth'],function (){
         Route::get('products/favorites', 'ProductsController@favorites')->name('products.favorites');
         //购物车相关
         Route::post('cart','CartController@add')->name('cart.add');
+        Route::get('cart','CartController@index')->name('cart.index');
+        Route::delete('cart/{productSku}','CartController@remove')->name('cart.remove');
     });
 });
 Route::redirect('/', '/products')->name('root');
