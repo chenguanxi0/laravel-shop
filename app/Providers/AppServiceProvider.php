@@ -26,11 +26,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('alipay',function (){
+        $this->app->singleton('alipay', function () {
             $config = config('pay.alipay');
             //判断是否为线上环境
-            if (app()->environment() !== 'production'){
-                $config['model'] = 'dev';
+            if (app()->environment() !== 'production') {
+                $config['mode'] = 'dev';
                 $config['log']['level'] = Logger::DEBUG;
             }else{
                 $config['log']['level'] = Logger::WARNING;

@@ -17,6 +17,13 @@ Auth::routes();
 Route::get('/test',function (){
 
 });
+Route::get('alipay', function() {
+    return app('alipay')->web([
+        'out_trade_no' => time(),
+        'total_amount' => '1',
+        'subject' => 'test subject - 测试',
+    ]);
+});
 Route::group(['middleware' => 'auth'],function (){
     //邮箱验证提示
     Route::get('/email_verify_notice','PagesController@emailVerifyNotice')->name('email_verify_notice');
