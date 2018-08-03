@@ -9,9 +9,11 @@
 namespace App\repositories;
 
 use App\Exceptions\InvalidRequestException;
-use App\Models\CartItem;
+use App\Jobs\CloseOrder;
 use App\Models\Order;
 use App\Models\ProductSku;
+use App\Models\User;
+use App\Models\UserAddress;
 use Carbon\Carbon;
 
 class OrderRepository
@@ -23,12 +25,12 @@ class OrderRepository
      * @date 2018/7/31
      * @throws
      */
-    public function createOrder($user,$request)
+    public function createOrder(User $user,UserAddress $address,$remark,$items)
     {
 
-        $order = \DB::transaction(function () use($user,$request) {
+        $order = \DB::transaction(function () use($user,$address,$remark,$items) {
             // 更新此地址的最后使用时间
-            $address = $user->addresses()->find($request->input('address_id'));
+
             $address->update(['last_used_at'=>Carbon::now()]);
             // 创建一个订单
             $order = new Order([
@@ -38,7 +40,7 @@ class OrderRepository
                     'contact_name'  => $address->contact_name,
                     'contact_phone' => $address->contact_phone,
                 ],
-                'remark' => $request->input('remark'),
+                'remark' => $remark,
                 'total_amount' => 0,
             ]);
             // 订单关联到当前用户
@@ -46,7 +48,6 @@ class OrderRepository
             $order->save();
 
             $totalAmount = 0;
-            $items = $request->input('items');
             // 遍历用户提交的 SKU
             foreach ($items as $data){
                 // 创建一个 OrderItem 并直接与当前订单关联
@@ -68,10 +69,11 @@ class OrderRepository
             // 更新订单总金额
             $order->update(['total_amount' => $totalAmount]);
             // 将下单的商品从购物车中移除
-            $product_sku_id = collect($request->input('items'))->pluck('sku_id');
-            CartItem::query()->whereIn('product_sku_id',$product_sku_id)->delete();
+            $product_sku_id = collect($items)->pluck('sku_id');
+            app(CartRepository::class)->remove($product_sku_id);
             return $order;
         });
+        dispatch(new CloseOrder($order,config('app.order_ttl')));
         return $order;
     }
 
