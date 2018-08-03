@@ -328,6 +328,7 @@ body {
   }
 }
 .orders-show-page {
+
   font-size: 12px;
   .vertical-middle {
     vertical-align: middle;
@@ -391,5 +392,9 @@ body {
       width: 150px;
       padding-right: 20px;
     }
+  }
+  .payment-buttons {
+    margin-top: 10px;
+    padding-right: 10px;
   }
 }
