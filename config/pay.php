@@ -8,7 +8,6 @@ return [
         'log'            => ['file' => storage_path('logs/alipay.log'),
         ],
     ],
-
     'wechat' => [
         'app_id'      => '',
         'mch_id'      => '',

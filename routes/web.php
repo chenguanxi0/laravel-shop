@@ -15,7 +15,7 @@
 
 Auth::routes();
 Route::get('/test',function (){
-
+    \Log::debug('Alipay notify',[111]);
 });
 
 Route::group(['middleware' => 'auth'],function (){
